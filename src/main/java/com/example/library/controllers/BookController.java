@@ -71,6 +71,7 @@ public class BookController {
         bookRepository.save(book);
         return "redirect:/book";
     }
+
     @PostMapping("/book/{id}/remove")
     public String bookPostDelete(@PathVariable(value = "id") long id, Model model) {
         Book book = (bookRepository.findById(id)).orElseThrow();

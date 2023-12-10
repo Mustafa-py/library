@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Controller
@@ -40,9 +41,12 @@ public class UserController {
             return "redirect:/user";
         }
         Optional<User> user = userRepository.findById(id);
-        model.addAttribute("user", user.orElse(null));
+        ArrayList<User> result = new ArrayList<>();
+        user.ifPresent(result::add);
+        model.addAttribute("user", result);
         return "user-details";
     }
+
 
     @GetMapping("/user/{id}/edit")
     public String userEdit(@PathVariable(value = "id") long id, Model model) {
@@ -50,7 +54,9 @@ public class UserController {
             return "redirect:/user";
         }
         Optional<User> user = userRepository.findById(id);
-        model.addAttribute("user", user.orElse(null));
+        ArrayList<User> result = new ArrayList<>();
+        user.ifPresent(result::add);
+        model.addAttribute("user", result);
         return "user-edit";
     }
 
@@ -63,6 +69,7 @@ public class UserController {
         userRepository.save(user);
         return "redirect:/user";
     }
+
 
     @PostMapping("/user/{id}/remove")
     public String userPostDelete(@PathVariable(value = "id") long id, Model model) {
