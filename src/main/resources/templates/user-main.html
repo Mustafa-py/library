@@ -10,6 +10,8 @@
 
 <div class="container mt-5">
   <h1>Список пользователей</h1>
+  <a href="/user/add" class="btn btn-success">Добавить пользователя</a>
+
   <div th:each="user : ${users}" class="alert alert-info mt-2">
     <h3 th:text="${user.name}"/>
     <p th:text="${user.email}"/>

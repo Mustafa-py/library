@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Книги в аренде</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container mt-5">
+  <h1>Книги в аренде</h1>
+  <a href="/bookLoan/add" class="btn btn-success">Добавить аренду</a>
+
+  <div th:each="bookLoan : ${bookLoans}" class="alert alert-info mt-2">
+    <h3 th:text="${bookLoan.bookCopy.Book.title}"/>
+    <p>
+      <strong>User:</strong> <span th:text="${bookLoan.user.name}"></span><br/>
+      <strong>Start Date:</strong> <span th:text="${#dates.format(bookLoan.startDate, 'dd-MM-yyyy')}"></span><br/>
+      <strong>End Date:</strong> <span th:text="${#dates.format(bookLoan.endDate, 'dd-MM-yyyy')}"></span>
+    </p>
+    <a th:href="'/bookLoan/' + ${bookLoan.loanId}" class="btn btn-warning">Детальнее</a>
+  </div>
+</div>
+
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>

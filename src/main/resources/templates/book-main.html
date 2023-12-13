@@ -10,6 +10,7 @@
 
 <div class="container mt-5">
     <h1>Книги в наличии</h1>
+    <a href="/book/add" class="btn btn-success">Добавить книгу</a>
     <div th:each="el : ${books}" class="alert alert-info mt-2">
         <h3 th:text="${el.title}"/>
         <p th:text="${el.publication_year}"/>

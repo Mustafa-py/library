@@ -1,10 +1,13 @@
 package com.example.library.controllers;
 
+import com.example.library.models.BookCopy;
 import com.example.library.models.BookLoan;
+import com.example.library.models.User;
 import com.example.library.repository.BookCopyRepository;
 import com.example.library.repository.BookLoanRepository;
 import com.example.library.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +20,10 @@ public class BookLoanController {
 
     @Autowired
     private BookLoanRepository bookLoanRepository;
+
     @Autowired
     private BookCopyRepository bookCopyRepository;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -31,29 +36,31 @@ public class BookLoanController {
 
     @GetMapping("/bookLoan/add")
     public String bookLoanAdd(Model model) {
-        // Здесь вы можете добавить логику для получения списка доступных книг и копий для аренды
-        // и передать их в модель для отображения на странице добавления аренды.
+        Iterable<User> users = userRepository.findAll();
+        Iterable<BookCopy> copies = bookCopyRepository.findAll();
+
+        model.addAttribute("users", users);
+        model.addAttribute("copies", copies);
+
         return "bookLoan-add";
     }
 
     @PostMapping("/bookLoan/add")
-    public String bookLoanPostAdd(@RequestParam Long userId, @RequestParam Long copyId, Model model) {
+    public String bookLoanPostAdd(
+            @RequestParam Long userId,
+            @RequestParam Long copyId,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam Date startDate,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam Date endDate
+    ) {
         BookLoan bookLoan = new BookLoan();
-        bookLoan.setUser(userRepository.findById(userId).orElseThrow()); // Предполагается, что у вас есть userRepository
-        bookLoan.setBookCopy(bookCopyRepository.findById(copyId).orElseThrow()); // Предполагается, что у вас есть bookCopyRepository
-        bookLoan.setStartDate(new Date()); // Установите начальную дату аренды
-        // Установите дату окончания аренды в соответствии с вашей логикой
-        bookLoan.setEndDate(calculateEndDate(bookLoan.getStartDate()));
+        bookLoan.setUser(userRepository.findById(userId).orElseThrow());
+        bookLoan.setBookCopy(bookCopyRepository.findById(copyId).orElseThrow());
+        bookLoan.setStartDate(startDate);
+        bookLoan.setEndDate(endDate);
         bookLoanRepository.save(bookLoan);
         return "redirect:/bookLoan";
     }
 
-    // Дополнительные методы для работы с арендой
-
-    private Date calculateEndDate(Date startDate) {
-        // Ваша логика для расчета даты окончания аренды (например, добавление 14 дней)
-        return startDate;
-    }
 
     @GetMapping("/bookLoan/{id}")
     public String bookLoanDetails(@PathVariable(value = "id") long id, Model model) {
@@ -68,10 +75,13 @@ public class BookLoanController {
     @PostMapping("/bookLoan/{id}/return")
     public String bookLoanPostReturn(@PathVariable(value = "id") long id, Model model) {
         BookLoan bookLoan = bookLoanRepository.findById(id).orElseThrow();
-        // Добавьте логику для возврата книги, установки даты возврата, и т.д.
-        // Обновите статус копии книги
         bookLoan.getBookCopy().setAvailable(true);
         bookLoanRepository.delete(bookLoan);
         return "redirect:/bookLoan";
+    }
+
+    private Date calculateEndDate(Date startDate) {
+        // Ваша логика для расчета даты окончания аренды (например, добавление 14 дней)
+        return startDate;
     }
 }
