@@ -13,7 +13,7 @@
     <a href="/book/add" class="btn btn-success">Добавить книгу</a>
     <div th:each="el : ${books}" class="alert alert-info mt-2">
         <h3 th:text="${el.title}"/>
-        <p th:text="${el.publication_year}"/>
+        <p th:text="${el.author}"/>
         <a th:href="'/book/' + ${el.id}" class="btn btn-warning">Детальнее</a>
     </div>
 </div>

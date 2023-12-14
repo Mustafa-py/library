@@ -14,7 +14,7 @@
         <p th:text="${el.author}"/>
         <p th:text="${el.publication_year}"/>
         <p th:text="${el.isbn}"/>
-        <a th:href="'/book/' + ${el.id} + '/edit'" class="btn bnt-warning">Редактировать</a>
+        <a th:href="'/book/' + ${el.id} + '/edit'" class="btn btn-warning">Редактировать</a>
         <form th:action="'/book/' + ${el.id} + '/remove'" method="post">
             <button class="btn btn-warning" type="submit">Удалить</button>
         </form>
